@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RowElement {
 
-    ImmutableMap<String, String> map;
+    private final ImmutableMap<String, String> map;
 
     public RowElement(Map<String, String> map) {
         this.map = ImmutableMap.copyOf(map);

@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class ComparisonResult {
 
-    String oldValue;
-    String newValue;
+    private final String oldValue;
+    private final String newValue;
 
-    public void ComparisonResult(String oldValue, String newValue) {
+    public ComparisonResult(String oldValue, String newValue) {
         this.oldValue = oldValue;
         this.newValue = newValue;
     }

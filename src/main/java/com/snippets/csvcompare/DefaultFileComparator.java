@@ -16,8 +16,8 @@ public class DefaultFileComparator implements FileComparator {
     @Value("app.input.new.file")
     private String newFilename;
 
-    private FileToMapConverter fileToMapConverter ;
-    private IdentifierFetcher identifierFetcher;
+    private final FileToMapConverter fileToMapConverter ;
+    private final IdentifierFetcher identifierFetcher;
 
     @Autowired
     public DefaultFileComparator(FileToMapConverter fileToMapConverter, IdentifierFetcher identifierFetcher) {
@@ -29,7 +29,6 @@ public class DefaultFileComparator implements FileComparator {
     public List<ComparisonResult> compare() {
         ConcurrentMap<String, RowElement> dataFromOldFile = fileToMapConverter.convert(oldFilename);
         ConcurrentMap<String, RowElement> dataFromNewFile = fileToMapConverter.convert(newFilename);
-
 
         return null;
     }

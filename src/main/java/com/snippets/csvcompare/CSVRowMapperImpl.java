@@ -25,7 +25,7 @@ public class CSVRowMapperImpl implements CSVRowMapper {
         return new RowElement(IntStream.range(0, values.size())
                 .boxed()
                 .collect(Collectors.toMap(
-                        i -> columnPositionToNameConverter.convert(i),
+                        columnPositionToNameConverter::convert,
                         i -> values.get(i).strip())));
     }
 }
