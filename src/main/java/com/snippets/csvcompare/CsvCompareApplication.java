@@ -2,6 +2,7 @@ package com.snippets.csvcompare;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
 
@@ -9,7 +10,8 @@ import java.io.IOException;
 public class CsvCompareApplication {
 
 	public static void main(String[] args) throws IOException {
-		SpringApplication.run(CsvCompareApplication.class, args);
+		ConfigurableApplicationContext context = SpringApplication.run(CsvCompareApplication.class, args);
+//		context.getBean()
 	}
 
 
