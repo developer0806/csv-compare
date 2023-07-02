@@ -1,24 +1,31 @@
 package com.snippets.csvcompare;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+@Component
 public class CSVRowMapperImpl implements CSVRowMapper {
 
     public static final String COMMA = ",";
 
+    private final ColumnPositionToNameConverter columnPositionToNameConverter;
+
     @Autowired
-    ColumnPositionToNameConverter columnPositionToNameConverter;
+    public CSVRowMapperImpl(ColumnPositionToNameConverter columnPositionToNameConverter) {
+        this.columnPositionToNameConverter = columnPositionToNameConverter;
+    }
 
     @Override
     public RowElement map(String line) {
         List<String> values = Arrays.asList(line.split(COMMA));
-        HashMap<String, String> recordMap = new HashMap<>();
-        ListIterator<String> valueIterator = values.listIterator();
-        while (valueIterator.hasNext()) {
-            recordMap.put(columnPositionToNameConverter.convert(valueIterator.nextIndex()), valueIterator.next());
-        }
-        return new RowElement(recordMap);
+        return new RowElement(IntStream.range(0, values.size())
+                .boxed()
+                .collect(Collectors.toMap(
+                        i -> columnPositionToNameConverter.convert(i),
+                        i -> values.get(i).strip())));
     }
 }

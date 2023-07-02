@@ -8,9 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -23,7 +21,7 @@ class CSVRowMapperImplTest {
     public static final String COLUMN_2 = "Column2";
     public static final String COLUMN_3 = "Column3";
     @InjectMocks
-    CSVRowMapper mapper;
+    CSVRowMapperImpl mapper;
     @Mock
     private ColumnPositionToNameConverter columnPositionToNameConverter;
 
@@ -34,11 +32,11 @@ class CSVRowMapperImplTest {
 
     @Test
     void map_whenThreeColumns_ThenMapSizeIsThree() {
-        RowElement rowElement = mapper.map(VALUE_1 + ", " + VALUE_2 + ", " + VALUE_3);
 
-        when(columnPositionToNameConverter.convert(1)).thenReturn(COLUMN_1);
-        when(columnPositionToNameConverter.convert(2)).thenReturn(COLUMN_2);
-        when(columnPositionToNameConverter.convert(3)).thenReturn(COLUMN_3);
+        when(columnPositionToNameConverter.convert(0)).thenReturn(COLUMN_1);
+        when(columnPositionToNameConverter.convert(1)).thenReturn(COLUMN_2);
+        when(columnPositionToNameConverter.convert(2)).thenReturn(COLUMN_3);
+        RowElement rowElement = mapper.map(VALUE_1 + ", " + VALUE_2 + ", " + VALUE_3);
         assertEquals(3, rowElement.getMap().size());
         assertEquals(VALUE_1,rowElement.getMap().get(COLUMN_1));
         assertEquals(VALUE_2,rowElement.getMap().get(COLUMN_2));

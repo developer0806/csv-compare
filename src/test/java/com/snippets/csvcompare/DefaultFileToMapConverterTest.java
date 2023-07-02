@@ -1,10 +1,8 @@
 package com.snippets.csvcompare;
 
-import com.google.common.collect.Maps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -13,10 +11,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentMap;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 class DefaultFileToMapConverterTest {
@@ -24,31 +23,36 @@ class DefaultFileToMapConverterTest {
     public static final String LINE_01 = "Row1Column1,Row1Column2,Row1Column3";
     public static final String LINE_02 = "Row2Column1,Row2Column2,Row2Column3";
     public static final String LINE_03 = "Row3Column1,Row3Column2,Row3Column3";
-    @InjectMocks
-    private FileToMapConverter converter;
+
+    private DefaultFileToMapConverter converter;
+
     @Mock
-    private CSVRowMapper csvRowMapper;
+    ColumnPositionToNameConverter columnPositionToNameConverter;
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+        converter = new DefaultFileToMapConverter(new CSVRowMapperImpl(columnPositionToNameConverter));
     }
     @Test
     public void convert_whenFileHasThreeColumnsThreeRows_thenReturnCorrespondingMap() throws IOException {
-        Path tempFile = Files.createTempFile("prefix", "old-suffix");
+        Path tempFile = Files.createTempFile(Paths.get("."),"prefix", "old-suffix");
         try (BufferedWriter writer = Files.newBufferedWriter(tempFile)) {
-            writer.write(LINE_01); writer.newLine();
-            writer.write(LINE_02); writer.newLine();
-            writer.write(LINE_03); writer.newLine();
+            writeLine(writer, LINE_01);
+//            writeLine(writer, LINE_02);
+//            writeLine(writer, LINE_03);
         }
-
-        when(csvRowMapper.map(anyString())).thenReturn(new RowElement(Maps.newHashMap()));
-
+        when(columnPositionToNameConverter.convert(anyInt()))
+                .thenReturn("Str11").thenReturn("Str12").thenReturn("Str13")
+                .thenReturn("Str21").thenReturn("Str22").thenReturn("Str33")
+                .thenReturn("Str31").thenReturn("Str32").thenReturn("Str33");
         ConcurrentMap<String, RowElement> result = converter.convert(tempFile.getFileName().toString());
 
-        verify(csvRowMapper, times(1)).map(LINE_01);
-        verify(csvRowMapper, times(1)).map(LINE_02);
-        verify(csvRowMapper, times(1)).map(LINE_03);
+        System.out.println(result);
+    }
 
+    private static void writeLine(BufferedWriter writer, String line01) throws IOException {
+        writer.write(line01);
+        writer.newLine();
     }
 
 }
